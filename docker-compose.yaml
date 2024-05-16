@@ -1,0 +1,65 @@
+version: '3'
+services:
+  lb:
+    container_name: haproxy-tutorial-lb
+    image: haproxy:lts
+    ports:
+      - 28080:8080
+      - 28404:8404
+    volumes:
+      - ./haproxy/:/usr/local/etc/haproxy
+  controller:
+    container_name: controller-example
+    image: haproxy-tutorial-example-controller
+    build:
+      context: controller_svc
+      dockerfile: Dockerfile
+    environment:
+      - LB_URL=http://haproxy-tutorial-lb:8080
+    ports:
+      - 20080:8000
+  ocr1:
+    container_name: ocr1
+    image: haproxy-tutorial-example-ocr
+    build:
+      context: ocr_svc
+      dockerfile: Dockerfile
+    environment: 
+      - SVC_NAME=ocr1
+      - DURATION=1
+  ocr2:
+    container_name: ocr2
+    image: haproxy-tutorial-example-ocr
+    build:
+      context: ocr_svc
+      dockerfile: Dockerfile
+    environment: 
+      - SVC_NAME=ocr2
+      - DURATION=3
+  ocr3:
+    container_name: ocr3
+    image: haproxy-tutorial-example-ocr
+    build:
+      context: ocr_svc
+      dockerfile: Dockerfile
+    environment: 
+      - SVC_NAME=ocr3
+      - DURATION=5
+  receipt1:
+    container_name: receipt1
+    image: haproxy-tutorial-example-receipt
+    build:
+      context: receipt_svc
+      dockerfile: Dockerfile
+    environment: 
+      - SVC_NAME=receipt1
+      - DURATION=1
+  receipt2:
+    container_name: receipt2
+    image: haproxy-tutorial-example-receipt
+    build:
+      context: receipt_svc
+      dockerfile: Dockerfile
+    environment: 
+      - SVC_NAME=receipt2
+      - DURATION=3
